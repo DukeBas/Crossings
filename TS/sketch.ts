@@ -1,5 +1,7 @@
 const maxTries = 30; // maximum amount of times a line can be regenerated per loop
 const linesPerIteration = 250; // amount of lines per drawn frame
+const startDomainAngle = Math.PI/8;
+const endDomainAngle = 3*Math.PI/8;
 
 type Line = {
   start: p5.Vector,
@@ -29,6 +31,10 @@ function setup() {
     start: createVector(0,0),
     end: createVector(1,0),
   };
+
+
+  lines.push(l);
+  drawLine(l)
 }
 
 // automatically called function to make canvas resize with window
@@ -58,9 +64,14 @@ function draw() {
       lines.push(newLine);
 
       // draw the line
-      line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
+      drawLine(newLine);
     }
   }
+}
+
+// draws a given line to the canvas
+function drawLine(l: Line): void {
+  line(l.start.x, l.start.y, l.end.x, l.end.y);
 }
 
 // generates a random point on the canvas, returned as vector
@@ -96,13 +107,13 @@ function angleTest(l: Line, m: Line, dStart: number, dEnd: number): boolean {
 
 // tests whether two linesegments intersect, and if they do if they are in a given domain
 function angleIntersectTest(l: Line, m: Line, dStart: number, dEnd: number): boolean {
-  return IntersectionTest(l, m) ? angleTest(l, m, 0, 22) : false;
+  return IntersectionTest(l, m) ? !angleTest(l, m, dStart, dEnd) : false;
 }
 
 // tests a line against a set of lines using some set of lines using a given function
-function testLineAgainstSet(A: Line, Set: Line[], func: Function): boolean {
+function testLineAgainstSet(l: Line, Set: Line[], func: Function): boolean {
   return Set.some((line) => {
-    return func(A, line);
+    return func(l, line, startDomainAngle, endDomainAngle);
   });
 }
 

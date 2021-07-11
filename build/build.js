@@ -6,6 +6,8 @@ function closeSidebar() {
 }
 var maxTries = 30;
 var linesPerIteration = 250;
+var startDomainAngle = Math.PI / 8;
+var endDomainAngle = 3 * Math.PI / 8;
 var lines = [];
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
@@ -23,6 +25,8 @@ function setup() {
         start: createVector(0, 0),
         end: createVector(1, 0),
     };
+    lines.push(l);
+    drawLine(l);
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
@@ -41,9 +45,12 @@ function draw() {
         } while (testLineAgainstSet(newLine, lines, angleIntersectTest) && attemptNumber < maxTries);
         if (attemptNumber < maxTries) {
             lines.push(newLine);
-            line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
+            drawLine(newLine);
         }
     }
+}
+function drawLine(l) {
+    line(l.start.x, l.start.y, l.end.x, l.end.y);
 }
 function getPoint() {
     return createVector(random(0, width), random(0, height));
@@ -67,11 +74,11 @@ function angleTest(l, m, dStart, dEnd) {
     return (angle >= dStart && angle <= dEnd);
 }
 function angleIntersectTest(l, m, dStart, dEnd) {
-    return IntersectionTest(l, m) ? angleTest(l, m, 0, 22) : false;
+    return IntersectionTest(l, m) ? !angleTest(l, m, dStart, dEnd) : false;
 }
-function testLineAgainstSet(A, Set, func) {
+function testLineAgainstSet(l, Set, func) {
     return Set.some(function (line) {
-        return func(A, line);
+        return func(l, line, startDomainAngle, endDomainAngle);
     });
 }
 function angleBetweenLines(l, k) {
