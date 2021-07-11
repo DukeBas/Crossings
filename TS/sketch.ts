@@ -1,5 +1,5 @@
 const maxTries = 30; // maximum amount of times a line can be regenerated per loop
-const linesPerIteration = 20; // amount of lines per drawn frame
+const linesPerIteration = 250; // amount of lines per drawn frame
 
 type Line = {
   start: p5.Vector,
@@ -25,6 +25,7 @@ function setup() {
 // automatically called function to make canvas resize with window
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  lines.length = 0; // clear lines array
 }
 
 // single drawing iteration
