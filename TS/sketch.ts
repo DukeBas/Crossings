@@ -90,7 +90,7 @@ function testLineAgainstSet(A: Line, Set: Line[], func: Function): boolean {
   });
 }
 
-// returns the angle (between 0 to XX rads)
+// returns the angle (between 0 to PI/2 rads)
 function angleBetweenLines(l: Line, k: Line) {
   const dir_l = l.end.sub(l.start);
   const dir_k = k.end.sub(k.start);
