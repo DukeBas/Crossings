@@ -5,7 +5,7 @@ function closeSidebar() {
     document.getElementById("sidebar").style.width = "0";
 }
 var maxTries = 30;
-var linesPerIteration = 20;
+var linesPerIteration = 250;
 var lines = [];
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
@@ -18,6 +18,7 @@ function setup() {
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+    lines.length = 0;
 }
 function draw() {
     for (var i = 0; i < linesPerIteration; i++) {
