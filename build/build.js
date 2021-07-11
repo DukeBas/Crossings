@@ -38,7 +38,7 @@ function draw() {
                 start: getPoint(),
                 end: getPoint(),
             };
-        } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
+        } while (testLineAgainstSet(newLine, lines, angleIntersectTest) && attemptNumber < maxTries);
         if (attemptNumber < maxTries) {
             lines.push(newLine);
             line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
@@ -59,14 +59,24 @@ function IntersectionTest(l, m) {
         return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
     }
 }
+function angleTest(l, m, dStart, dEnd) {
+    var angle = angleBetweenLines(l, m);
+    if (angle > Math.PI / 2) {
+        angle -= Math.PI / 2;
+    }
+    return (angle >= dStart && angle <= dEnd);
+}
+function angleIntersectTest(l, m, dStart, dEnd) {
+    return IntersectionTest(l, m) ? angleTest(l, m, 0, 22) : false;
+}
 function testLineAgainstSet(A, Set, func) {
     return Set.some(function (line) {
         return func(A, line);
     });
 }
 function angleBetweenLines(l, k) {
-    var dir_l = l.end.sub(l.start);
-    var dir_k = k.end.sub(k.start);
+    var dir_l = l.end.copy().sub(l.start);
+    var dir_k = k.end.copy().sub(k.start);
     return Math.acos((dir_l.x * dir_k.x + dir_l.y * dir_k.y) /
         (Math.sqrt(Math.pow(dir_l.x, 2) + Math.pow(dir_l.y, 2)) * Math.sqrt(Math.pow(dir_k.x, 2) + Math.pow(dir_k.y, 2))));
 }

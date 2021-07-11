@@ -49,7 +49,8 @@ function draw() {
         start: getPoint(),
         end: getPoint(),
       }
-    } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
+    // } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
+    } while (testLineAgainstSet(newLine, lines, angleIntersectTest) && attemptNumber < maxTries);
 
     // only do things if we found a new valid line
     if (attemptNumber < maxTries) {
@@ -83,6 +84,21 @@ function IntersectionTest(l: Line, m: Line): boolean {
   }
 }
 
+// tests whether two linesegments with the angle being in some range in [0, PI/2]
+// assumes linesegments intersect
+function angleTest(l: Line, m: Line, dStart: number, dEnd: number): boolean {
+  let angle = angleBetweenLines(l, m);
+  if (angle > Math.PI/2) {
+    angle -= Math.PI/2;
+  }
+  return (angle >= dStart && angle <= dEnd);
+}
+
+// tests whether two linesegments intersect, and if they do if they are in a given domain
+function angleIntersectTest(l: Line, m: Line, dStart: number, dEnd: number): boolean {
+  return IntersectionTest(l, m) ? angleTest(l, m, 0, 22) : false;
+}
+
 // tests a line against a set of lines using some set of lines using a given function
 function testLineAgainstSet(A: Line, Set: Line[], func: Function): boolean {
   return Set.some((line) => {
@@ -90,10 +106,10 @@ function testLineAgainstSet(A: Line, Set: Line[], func: Function): boolean {
   });
 }
 
-// returns the angle (between 0 to PI/2 rads)
-function angleBetweenLines(l: Line, k: Line) {
-  const dir_l = l.end.sub(l.start);
-  const dir_k = k.end.sub(k.start);
+// returns the angle (between 0 to PI rads)
+function angleBetweenLines(l: Line, k: Line): number {
+  const dir_l = l.end.copy().sub(l.start);
+  const dir_k = k.end.copy().sub(k.start);
   return Math.acos((dir_l.x*dir_k.x+dir_l.y*dir_k.y)/
   (Math.sqrt(Math.pow(dir_l.x, 2) + Math.pow(dir_l.y, 2))*Math.sqrt(Math.pow(dir_k.x, 2) + Math.pow(dir_k.y, 2))));
 }
