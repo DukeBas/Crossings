@@ -20,6 +20,15 @@ function setup() {
   strokeWeight(0.5);
 
   background(0);  // background color
+
+  const l: Line = {
+    start: createVector(1,1),
+    end: createVector(2,2),
+  };
+  const k: Line = {
+    start: createVector(0,0),
+    end: createVector(1,0),
+  };
 }
 
 // automatically called function to make canvas resize with window
@@ -61,15 +70,15 @@ function getPoint(): p5.Vector {
 // tests whether two linesegments intersect using determinant and testing if intersection is in the segments
 // returns true if lines intersect, else false
 // based on https://stackoverflow.com/a/24392281
-function IntersectionTest(A: Line, B: Line): boolean {
-  const det = (A.end.x - A.start.x) * (B.end.y - B.start.y) - (B.end.x - B.start.x) * (A.end.y - A.start.y);
+function IntersectionTest(l: Line, m: Line): boolean {
+  const det = (l.end.x - l.start.x) * (m.end.y - m.start.y) - (m.end.x - m.start.x) * (l.end.y - l.start.y);
   if (det === 0) {
     // parallel lines
     return false;
   } else {
     // check if the intersection is in the segments
-    const lambda = ((B.end.y - B.start.y) * (B.end.x - A.start.x) + (B.start.x - B.end.x) * (B.end.y - A.start.y)) / det;
-    const gamma = ((A.start.y - A.end.y) * (B.end.x - A.start.x) + (A.end.x - A.start.x) * (B.end.y - A.start.y)) / det;
+    const lambda = ((m.end.y - m.start.y) * (m.end.x - l.start.x) + (m.start.x - m.end.x) * (m.end.y - l.start.y)) / det;
+    const gamma = ((l.start.y - l.end.y) * (m.end.x - l.start.x) + (l.end.x - l.start.x) * (m.end.y - l.start.y)) / det;
     return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
   }
 }
@@ -79,4 +88,12 @@ function testLineAgainstSet(A: Line, Set: Line[], func: Function): boolean {
   return Set.some((line) => {
     return func(A, line);
   });
+}
+
+// returns the angle (between 0 to XX rads)
+function angleBetweenLines(l: Line, k: Line) {
+  const dir_l = l.end.sub(l.start);
+  const dir_k = k.end.sub(k.start);
+  return Math.acos((dir_l.x*dir_k.x+dir_l.y*dir_k.y)/
+  (Math.sqrt(Math.pow(dir_l.x, 2) + Math.pow(dir_l.y, 2))*Math.sqrt(Math.pow(dir_k.x, 2) + Math.pow(dir_k.y, 2))));
 }
