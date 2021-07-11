@@ -5,6 +5,7 @@ function closeSidebar() {
     document.getElementById("sidebar").style.width = "0";
 }
 var maxTries = 30;
+var linesPerIteration = 20;
 var lines = [];
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
@@ -13,23 +14,26 @@ function setup() {
     frameRate(60);
     stroke(255);
     strokeWeight(0.5);
+    background(0);
 }
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 function draw() {
-    var newLine;
-    var attemptNumber = 0;
-    do {
-        attemptNumber++;
-        newLine = {
-            start: getPoint(),
-            end: getPoint(),
-        };
-    } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
-    if (attemptNumber < maxTries) {
-        lines.push(newLine);
-        line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
+    for (var i = 0; i < linesPerIteration; i++) {
+        var newLine = void 0;
+        var attemptNumber = 0;
+        do {
+            attemptNumber++;
+            newLine = {
+                start: getPoint(),
+                end: getPoint(),
+            };
+        } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
+        if (attemptNumber < maxTries) {
+            lines.push(newLine);
+            line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
+        }
     }
 }
 function getPoint() {

@@ -1,4 +1,5 @@
 const maxTries = 30; // maximum amount of times a line can be regenerated per loop
+const linesPerIteration = 20; // amount of lines per drawn frame
 
 type Line = {
   start: p5.Vector,
@@ -17,6 +18,8 @@ function setup() {
 
   stroke(255);  // set drawing color to white
   strokeWeight(0.5);
+
+  background(0);  // background color
 }
 
 // automatically called function to make canvas resize with window
@@ -26,26 +29,27 @@ function windowResized() {
 
 // single drawing iteration
 function draw() {
-  // get a new line that doesn't intersect
-  let newLine: Line;
-  let attemptNumber = 0;
-  do {
-    attemptNumber++;
-    newLine = {
-      start: getPoint(),
-      end: getPoint(),
+  for (let i = 0; i < linesPerIteration; i++) {
+    // get a new line that doesn't intersect
+    let newLine: Line;
+    let attemptNumber = 0;
+    do {
+      attemptNumber++;
+      newLine = {
+        start: getPoint(),
+        end: getPoint(),
+      }
+    } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
+
+    // only do things if we found a new valid line
+    if (attemptNumber < maxTries) {
+      // add the line to the known lines
+      lines.push(newLine);
+
+      // draw the line
+      line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
     }
-  } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
-
-  // only do things if we found a new valid line
-  if (attemptNumber < maxTries){
-    // add the line to the known lines
-    lines.push(newLine);
-
-    // draw the line
-    line(newLine.start.x, newLine.start.y, newLine.end.x, newLine.end.y);
   }
-
 }
 
 // generates a random point on the canvas, returned as vector
