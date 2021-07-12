@@ -1,7 +1,7 @@
 const maxTries = 30; // maximum amount of times a line can be regenerated per loop
 const linesPerIteration = 250; // amount of lines per drawn frame
-const startDomainAngle = Math.PI/8;
-const endDomainAngle = 3*Math.PI/8;
+let startDomainAngle = 0;
+let endDomainAngle = Math.PI/2;
 let crossings = false;  // variable to hold state
 
 type Line = {

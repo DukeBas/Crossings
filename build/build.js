@@ -6,8 +6,8 @@ function closeSidebar() {
 }
 var maxTries = 30;
 var linesPerIteration = 250;
-var startDomainAngle = Math.PI / 8;
-var endDomainAngle = 3 * Math.PI / 8;
+var startDomainAngle = 0;
+var endDomainAngle = Math.PI / 2;
 var crossings = false;
 var lines = [];
 function setup() {
