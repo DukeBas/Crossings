@@ -8,6 +8,7 @@ var maxTries = 30;
 var linesPerIteration = 250;
 var startDomainAngle = Math.PI / 8;
 var endDomainAngle = 3 * Math.PI / 8;
+var crossings = false;
 var lines = [];
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
@@ -32,6 +33,10 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     lines.length = 0;
 }
+function toggleCrossings() {
+    crossings = !crossings;
+    windowResized();
+}
 function draw() {
     for (var i = 0; i < linesPerIteration; i++) {
         var newLine = void 0;
@@ -42,7 +47,7 @@ function draw() {
                 start: getPoint(),
                 end: getPoint(),
             };
-        } while (testLineAgainstSet(newLine, lines, angleIntersectTest) && attemptNumber < maxTries);
+        } while (testLineAgainstSet(newLine, lines, crossings ? angleIntersectTest : IntersectionTest) && attemptNumber < maxTries);
         if (attemptNumber < maxTries) {
             lines.push(newLine);
             drawLine(newLine);

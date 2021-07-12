@@ -2,6 +2,7 @@ const maxTries = 30; // maximum amount of times a line can be regenerated per lo
 const linesPerIteration = 250; // amount of lines per drawn frame
 const startDomainAngle = Math.PI/8;
 const endDomainAngle = 3*Math.PI/8;
+let crossings = false;  // variable to hold state
 
 type Line = {
   start: p5.Vector,
@@ -12,7 +13,7 @@ type Line = {
 const lines: Line[] = [];
 
 // run before first drawn frame
-function setup() {
+function setup():void {
   const canvas = createCanvas(windowWidth, windowHeight);
   canvas.position(0, 0);  // make canvas start in top-left corner
   canvas.style('z-index', '-1');  // set canvas as background
@@ -38,9 +39,15 @@ function setup() {
 }
 
 // automatically called function to make canvas resize with window
-function windowResized() {
+function windowResized(): void {
   resizeCanvas(windowWidth, windowHeight);
   lines.length = 0; // clear lines array
+}
+
+// called when crossings are toggled
+function toggleCrossings(): void {
+  crossings = !crossings;
+  windowResized();
 }
 
 // single drawing iteration
@@ -55,8 +62,7 @@ function draw() {
         start: getPoint(),
         end: getPoint(),
       }
-    // } while (testLineAgainstSet(newLine, lines, IntersectionTest) && attemptNumber < maxTries);
-    } while (testLineAgainstSet(newLine, lines, angleIntersectTest) && attemptNumber < maxTries);
+    } while (testLineAgainstSet(newLine, lines, crossings ? angleIntersectTest : IntersectionTest) && attemptNumber < maxTries);
 
     // only do things if we found a new valid line
     if (attemptNumber < maxTries) {
